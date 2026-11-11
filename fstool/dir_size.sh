@@ -1,0 +1,3 @@
+#!/data/data/com.termux/files/usr/bin/bash
+dir=${*-.}
+du -all -b --max-depth=1 $dir --exclude=$dir | sort -k1,1nr
