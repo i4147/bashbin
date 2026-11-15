@@ -1,4 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/zsh
+
 setopt SH_WORD_SPLIT GLOB_SUBST
 unsetopt NOMATCH
 # xclip-compatible wrapper for Termux using termux-api

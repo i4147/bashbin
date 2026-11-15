@@ -4,6 +4,8 @@ import locale
 import sys
 from collections.abc import Iterator
 from typing import NoReturn
+
+
 def sizes() -> Iterator[int]:
     """Yield the wasted space for each line from `findup --summary` output."""
     for line in sys.stdin:
@@ -13,6 +15,8 @@ def sizes() -> Iterator[int]:
         num -= 1
         size *= num
         yield size
+
+
 def human_num(num: float, divisor: int = 1, power: str = "") -> str:
     """Format a number with human-readable units.
     Args:
@@ -41,6 +45,8 @@ def human_num(num: float, divisor: int = 1, power: str = "") -> str:
     else:
         num = locale.format_string("%4.f", num, grouping=True) + "  "
     return f"{num}{power}"
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments.
     Args:
@@ -55,6 +61,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="print the total in human readable form.",
     )
     return parser.parse_args(argv)
+
+
 def main(argv: list[str] | None = None) -> None:
     """Main entry point for the script.
     Args:
@@ -65,5 +73,7 @@ def main(argv: list[str] | None = None) -> None:
         print(f"Total wasted space: {human_num(sum(sizes()), divisor=1024)}B")
     else:
         print(f"Total wasted space: {sum(sizes())} bytes")
+
+
 if __name__ == "__main__":
     main()

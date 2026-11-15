@@ -23,18 +23,12 @@ PROLOGUE = "setopt SH_WORD_SPLIT GLOB_SUBST\nunsetopt NOMATCH\n"
 
 
 def root_scripts() -> list[Path]:
-    return sorted(
-        path
-        for path in ROOT.glob("*.sh")
-        if path.is_file() and not path.is_symlink()
-    )
+    return sorted(path for path in ROOT.glob("*.sh") if path.is_file() and not path.is_symlink())
 
 
 def rewrite_bashisms(text: str) -> str:
     """Translate simple Bash-only setup commands to their Zsh equivalents."""
-    text = text.replace(
-        "shopt -s nullglob dotglob", "setopt NULL_GLOB GLOB_DOTS"
-    )
+    text = text.replace("shopt -s nullglob dotglob", "setopt NULL_GLOB GLOB_DOTS")
     # In the migrated script the wildcard is `*`, so nocaseglob has no effect.
     text = text.replace("shopt -s nullglob nocaseglob", "setopt NULL_GLOB")
     text = text.replace("shopt -s nullglob", "setopt NULL_GLOB")
@@ -72,9 +66,7 @@ def rewrite_references(names: list[str]) -> int:
     if not names:
         return 0
     alternatives = "|".join(re.escape(name) for name in sorted(names, key=len, reverse=True))
-    reference = re.compile(
-        rf"(?<![A-Za-z0-9_.-])({alternatives})\.sh(?![A-Za-z0-9_.-])"
-    )
+    reference = re.compile(rf"(?<![A-Za-z0-9_.-])({alternatives})\.sh(?![A-Za-z0-9_.-])")
     try:
         listed = subprocess.check_output(
             ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
@@ -139,11 +131,7 @@ def migrate() -> tuple[int, int, int]:
 
 def check() -> tuple[list[str], int, int]:
     problems: list[str] = []
-    zsh_files = sorted(
-        path
-        for path in ROOT.glob("*.zsh")
-        if path.is_file() and not path.is_symlink()
-    )
+    zsh_files = sorted(path for path in ROOT.glob("*.zsh") if path.is_file() and not path.is_symlink())
     scripts: list[Path] = []
     shell_sources = sorted(ROOT.glob("*.sh"))
     if shell_sources:
@@ -179,12 +167,8 @@ def check() -> tuple[list[str], int, int]:
 
     reference_names = [path.stem for path in zsh_files]
     if reference_names:
-        alternatives = "|".join(
-            re.escape(name) for name in sorted(reference_names, key=len, reverse=True)
-        )
-        stale_reference = re.compile(
-            rf"(?<![A-Za-z0-9_.-])({alternatives})\.sh(?![A-Za-z0-9_.-])"
-        )
+        alternatives = "|".join(re.escape(name) for name in sorted(reference_names, key=len, reverse=True))
+        stale_reference = re.compile(rf"(?<![A-Za-z0-9_.-])({alternatives})\.sh(?![A-Za-z0-9_.-])")
         try:
             listed = subprocess.check_output(
                 ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
@@ -204,19 +188,13 @@ def check() -> tuple[list[str], int, int]:
                 except (OSError, UnicodeDecodeError):
                     continue
                 if stale_reference.search(content):
-                    problems.append(
-                        f"{candidate.relative_to(ROOT)}: contains a stale reference to a root .sh script"
-                    )
+                    problems.append(f"{candidate.relative_to(ROOT)}: contains a stale reference to a root .sh script")
         except (OSError, subprocess.CalledProcessError) as error:
             problems.append(f"could not verify script references: {error}")
 
     links = [path for path in ROOT.iterdir() if path.is_symlink()]
     broken_links = [path.name for path in links if not path.exists()]
-    wrong_targets = [
-        f"{path.name} -> {os.readlink(path)}"
-        for path in links
-        if os.readlink(path).endswith(".sh")
-    ]
+    wrong_targets = [f"{path.name} -> {os.readlink(path)}" for path in links if os.readlink(path).endswith(".sh")]
     if broken_links:
         problems.append("broken root symlinks: " + ", ".join(broken_links))
     if wrong_targets:

@@ -3,13 +3,18 @@ import os
 import sys
 from pathlib import Path
 from typing import NoReturn
+
 last_size: int = 0
 last_inode: tuple[int, int] = (0, 0)
 group_to_check: list[str] = []
 write_group: int = 0
+
+
 def write_out_group() -> None:
     """Write the current group of duplicate candidates to stdout."""
     sys.stdout.writelines(group_to_check)
+
+
 def process_non_gui() -> None:
     """Process input in `--non-gui` mode: group lines by inode."""
     dups: list[str] = []
@@ -31,6 +36,8 @@ def process_non_gui() -> None:
     else:
         if len(inodes) > 1:
             sys.stdout.writelines(dups)
+
+
 def process_gui() -> None:
     """Process input in GUI mode: group lines by size and inode."""
     global last_size, last_inode, group_to_check, write_group
@@ -54,14 +61,21 @@ def process_gui() -> None:
     else:
         if write_group:
             write_out_group()
+
+
 def main(argv: list[str] | None = None) -> None:
     """Main entry point.
     Args:
         argv: List of command-line arguments. Defaults to ``sys.argv[1:]``.
     """
-    if len(argv if argv is not None else sys.argv[1:]) == 2 and (argv if argv is not None else sys.argv[1:])[0] == "--non-gui":
+    if (
+        len(argv if argv is not None else sys.argv[1:]) == 2
+        and (argv if argv is not None else sys.argv[1:])[0] == "--non-gui"
+    ):
         process_non_gui()
     else:
         process_gui()
+
+
 if __name__ == "__main__":
     main()

@@ -5,8 +5,11 @@ import locale
 import sys
 from pathlib import Path
 from typing import NoReturn
+
 CHUNK_SIZE: int = 32768
 locale.setlocale(locale.LC_ALL, "")
+
+
 def calc_hash(filename: str | Path, chunk_size: int = CHUNK_SIZE) -> str:
     """Calculate the SHA-256 hash of a file.
     Args:
@@ -28,6 +31,8 @@ def calc_hash(filename: str | Path, chunk_size: int = CHUNK_SIZE) -> str:
         if value.errno == errno.EINVAL:
             return "d41d8cd98f00b204e9800998ecf8427e"
         raise
+
+
 def printsum(filename: str | Path) -> None:
     """Print the SHA-256 hash and filename, or an error to stderr.
     Args:
@@ -37,6 +42,8 @@ def printsum(filename: str | Path) -> None:
         sys.stdout.write(f"{calc_hash(filename)}  {filename}\n")
     except OSError as value:
         sys.stderr.write(f"sha256: {filename}: {value.strerror}\n")
+
+
 def main(argv: list[str] | None = None) -> None:
     """Main entry point.
     Args:
@@ -45,5 +52,7 @@ def main(argv: list[str] | None = None) -> None:
     filenames = argv if argv is not None else sys.argv[1:]
     for filename in filenames:
         printsum(filename)
+
+
 if __name__ == "__main__":
     main()

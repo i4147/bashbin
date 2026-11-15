@@ -5,13 +5,17 @@ Reads file paths from stdin, groups consecutive duplicates, and either:
 - symlinks them to the first file (symlink mode)
 - deletes them (del mode)
 """
+
 import os
 import sys
 from pathlib import Path
 from typing import Literal, TextIO
+
 # Type aliases
 Mode = Literal["link", "del", "symlink"]
 Suffix = str
+
+
 def parse_args(args: list[str]) -> tuple[Mode, bool]:
     """Parse command line arguments.
     Args:
@@ -34,6 +38,8 @@ def parse_args(args: list[str]) -> tuple[Mode, bool]:
     if arg not in mode_map:
         raise ValueError(f"Invalid argument: {arg}")
     return mode_map[arg]
+
+
 def create_link(source: Path, target: Path, suffix: str, mode: Mode) -> None:
     """Create a hardlink or symlink from source to target.
     Args:
@@ -65,6 +71,8 @@ def create_link(source: Path, target: Path, suffix: str, mode: Mode) -> None:
                 backup_target.unlink(missing_ok=True)
         else:
             raise
+
+
 def process_files(
     input_stream: TextIO = sys.stdin,
     mode: Mode = "link",
@@ -107,6 +115,8 @@ def process_files(
                     create_link(keep_file, current, suffix, mode)
     if dry_run and keep_file is not None:
         print()
+
+
 def main() -> None:
     """Main entry point."""
     try:
@@ -116,5 +126,7 @@ def main() -> None:
         print("Usage: dedup [del|tdel|tmerge|symlink|tsymlink]", file=sys.stderr)
         sys.exit(1)
     process_files(mode=mode, dry_run=dry_run)
+
+
 if __name__ == "__main__":
     main()
