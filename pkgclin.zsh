@@ -1,6 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/zsh
 setopt SH_WORD_SPLIT GLOB_SUBST
 unsetopt NOMATCH
+
 pkg clean
 pkg autoclean
+apt clean
+apt autoclean
 apt autoremove
