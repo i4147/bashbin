@@ -208,6 +208,7 @@ def check() -> tuple[list[str], int, int]:
                 cwd=ROOT,
                 text=True,
                 capture_output=True,
+                check=False,
             )
             if result.returncode:
                 details = result.stderr.strip() or result.stdout.strip()

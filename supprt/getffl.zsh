@@ -1,4 +1,6 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/zsh
+setopt SH_WORD_SPLIT GLOB_SUBST
+unsetopt NOMATCH
 if [ "x$1" != "x-justPATH" ]; then
 	PERMPATH="/lib /usr/lib /usr/local/lib"
 fi

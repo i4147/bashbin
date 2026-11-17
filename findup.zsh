@@ -136,8 +136,8 @@ find -H "$@" -type f ! -name "*$LF*" -printf "$FPF\0$devFmt\0%i\0%s\n" |
 			if [ ! $mode = "summary" ]; then
 				if "$script_dir"/supprt/rmlint/fixdup </dev/null 2>/dev/null; then
 					"$script_dir"/supprt/rmlint/fixdup $t$mode
-				elif "$script_dir"/supprt/rmlint/fixdup.sh </dev/null 2>/dev/null; then
-					"$script_dir"/supprt/rmlint/fixdup.sh $t$mode
+				elif "$script_dir"/supprt/rmlint/fixdup.zsh </dev/null 2>/dev/null; then
+					"$script_dir"/supprt/rmlint/fixdup.zsh $t$mode
 				else
 					echo "Error, couldn't execute merge util" >&2
 					exit 1

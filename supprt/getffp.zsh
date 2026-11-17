@@ -1,4 +1,6 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/zsh
+setopt SH_WORD_SPLIT GLOB_SUBST
+unsetopt NOMATCH
 if [ "x$1" != "x-justPATH" ]; then
 	PERMPATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:
 	/usr/X11R6/bin:/usr/TeX/bin:/usr/tex/bin:/usr/games:/usr/local/games:"

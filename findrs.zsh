@@ -67,7 +67,7 @@ find -H "$@" -type f -size +0c ! -name "*$LF*" -printf "$FPF\0" |
 	tr '\n' '\0' |
 	if [ "$view" = "yes" ]; then
 		xargs -r0 grep -nE "$re" |
-			"$script_dir"/supprt/rmlint/view_ws.sh -
+			"$script_dir"/supprt/rmlint/view_ws.zsh -
 	elif [ "$count" = "yes" ]; then
 		xargs -r0 grep -Ec "$re" |
 			grep -vE "(:0$|^0$)" |

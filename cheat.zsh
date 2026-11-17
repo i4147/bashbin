@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/zsh
 
 emulate -L zsh
 setopt err_return no_unset pipe_fail
