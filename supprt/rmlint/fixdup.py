@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/data/data/com.termux/files/usr/bin/env python
 """Deduplicate files by hardlinking or symlinking duplicates to the first occurrence.
 Reads file paths from stdin, groups consecutive duplicates, and either:
 - hardlinks them to the first file (default)
