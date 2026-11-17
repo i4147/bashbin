@@ -1,4 +1,6 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/zsh
+setopt SH_WORD_SPLIT GLOB_SUBST
+unsetopt NOMATCH
 find "$@" -maxdepth 1 -mindepth 1 \( -type f -o -type l \) -print0 |
 	xargs -r0 du -b --max-depth 0 |
 	sort -k1,1n |

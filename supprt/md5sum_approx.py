@@ -4,7 +4,6 @@ import hashlib
 import locale
 import sys
 from pathlib import Path
-from typing import NoReturn
 
 CHUNK_SIZE: int = 32768
 locale.setlocale(locale.LC_ALL, "")

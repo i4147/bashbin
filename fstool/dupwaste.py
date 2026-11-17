@@ -3,7 +3,6 @@ import argparse
 import locale
 import sys
 from collections.abc import Iterator
-from typing import NoReturn
 
 
 def sizes() -> Iterator[int]:
@@ -40,11 +39,12 @@ def human_num(num: float, divisor: int = 1, power: str = "") -> str:
     while num >= 1000:
         num /= divisor
         power = powers[powers.index(power) + 1]
+    formatted: str
     if power.strip():
-        num = locale.format_string("%6.1f", num, grouping=True)
+        formatted = locale.format_string("%6.1f", num, grouping=True)
     else:
-        num = locale.format_string("%4.f", num, grouping=True) + "  "
-    return f"{num}{power}"
+        formatted = locale.format_string("%4.f", num, grouping=True) + "  "
+    return f"{formatted}{power}"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

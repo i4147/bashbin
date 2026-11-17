@@ -1,11 +1,17 @@
 #!/data/data/com.termux/files/usr/bin/env python
+"""Filter rmlint-style duplicate-candidate listings down to genuine duplicates.
+
+Reads newline-delimited groups of file paths (or, in ``--non-gui`` mode,
+groups separated by blank lines) from stdin and writes back only the groups
+that contain more than one distinct inode, i.e. the groups that are not
+already fully hardlinked together.
+"""
+
 import os
 import sys
-from pathlib import Path
-from typing import NoReturn
 
-last_size: int = 0
-last_inode: tuple[int, int] = (0, 0)
+last_size: str = ""
+last_inode: tuple[str, str] = ("", "")
 group_to_check: list[str] = []
 write_group: int = 0
 
@@ -16,7 +22,12 @@ def write_out_group() -> None:
 
 
 def process_non_gui() -> None:
-    """Process input in `--non-gui` mode: group lines by inode."""
+    """Process input in `--non-gui` mode: group lines by inode.
+
+    Each group of file paths is terminated by a blank line. A group is
+    written back out only if it contains more than one distinct inode
+    (i.e. the files are not already all hardlinked to each other).
+    """
     dups: list[str] = []
     inodes: dict[int, bool] = {}
     for line in sys.stdin:
@@ -33,20 +44,24 @@ def process_non_gui() -> None:
                 inodes[inode] = True
             except OSError:
                 sys.stderr.write(str(sys.exc_info()[1]) + "\n")
-    else:
-        if len(inodes) > 1:
-            sys.stdout.writelines(dups)
+    if len(inodes) > 1:
+        sys.stdout.writelines(dups)
 
 
 def process_gui() -> None:
-    """Process input in GUI mode: group lines by size and inode."""
+    """Process input in GUI mode: group lines by size and inode.
+
+    Each input line has the whitespace-separated fields ``path dev inode
+    size``. Consecutive lines that share the same size form a candidate
+    group; a group is written back out only if it contains more than one
+    distinct ``(dev, inode)`` pair.
+    """
     global last_size, last_inode, group_to_check, write_group
     for line in sys.stdin:
-        path: str
         dev: str
         inode: str
         size: str
-        path, dev, inode, size = line.rstrip().split(" ")
+        _path, dev, inode, size = line.rstrip().split(" ")
         if last_size and size == last_size:
             if (dev, inode) != last_inode:
                 write_group = 1
@@ -58,9 +73,8 @@ def process_gui() -> None:
             last_inode = (dev, inode)
             last_size = size
             write_group = 0
-    else:
-        if write_group:
-            write_out_group()
+    if write_group:
+        write_out_group()
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -68,10 +82,8 @@ def main(argv: list[str] | None = None) -> None:
     Args:
         argv: List of command-line arguments. Defaults to ``sys.argv[1:]``.
     """
-    if (
-        len(argv if argv is not None else sys.argv[1:]) == 2
-        and (argv if argv is not None else sys.argv[1:])[0] == "--non-gui"
-    ):
+    args = argv if argv is not None else sys.argv[1:]
+    if len(args) == 2 and args[0] == "--non-gui":
         process_non_gui()
     else:
         process_gui()

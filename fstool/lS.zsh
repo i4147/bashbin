@@ -1,4 +1,6 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/zsh
+setopt SH_WORD_SPLIT GLOB_SUBST
+unsetopt NOMATCH
 if [ -d "$1" ]; then
 	dir="$1"
 	cd "$dir"
