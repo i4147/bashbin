@@ -2,9 +2,9 @@
 setopt SH_WORD_SPLIT GLOB_SUBST
 unsetopt NOMATCH
 if [ "x$1" != "x-justPATH" ]; then
-	PERMPATH="/lib /usr/lib /usr/local/lib"
+	PERMPATH="/data/data/com.termux/files/usr/lib /data/data/com.termux/files/home/.local/lib /data/data/com.termux/files/usr/local/lib"
 fi
-CURRPATH=$(cat /etc/ld.so.conf)
+CURRPATH=$(cat /data/data/com.termux/files/usr/etc/ld.so.conf)
 LIB_PATH=$(echo $LD_LIBRARY_PATH | tr : '\n' | sed -e '/^$/d')
 find $PERMPATH $CURRPATH $LIB_PATH -type d -maxdepth 0 -follow \
 	-printf "%p\t%i\n" 2>/dev/null |

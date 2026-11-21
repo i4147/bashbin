@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/data/data/com.termux/files/usr/bin/env python
 """Migrate top-level Bash scripts and their command aliases to Zsh.
 
 Run with ``--apply`` to rename root-level ``*.sh`` scripts to ``*.zsh``, set
