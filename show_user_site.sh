@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/sh
 python3.14 - <<'PY'
 import site, sys
 print("Python:", sys.executable)

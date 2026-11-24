@@ -44,9 +44,7 @@ TO_BASH: dict[str, str] = {
     "setopt NULL_GLOB": "shopt -s nullglob",
 }
 
-TO_ZSH: dict[str, str] = {
-    value: key for key, value in TO_BASH.items()
-}
+TO_ZSH: dict[str, str] = {value: key for key, value in TO_BASH.items()}
 
 SELF: Path = Path(__file__).resolve()
 
@@ -138,13 +136,7 @@ def parse_only(value: str | None) -> set[str] | None:
 
     parts = [part.strip() for part in value.split(",")]
 
-    if any(
-        not part
-        or part in {".", ".."}
-        or "/" in part
-        or "\\" in part
-        for part in parts
-    ):
+    if any(not part or part in {".", ".."} or "/" in part or "\\" in part for part in parts):
         raise ValueError("--only must contain nonempty script stems, not paths")
 
     return set(parts)
@@ -190,12 +182,7 @@ def selected_scripts(
     suffix: str,
     only: set[str] | None,
 ) -> list[Path]:
-    return [
-        path
-        for path in files
-        if path.suffix == suffix
-        and (only is None or path.stem in only)
-    ]
+    return [path for path in files if path.suffix == suffix and (only is None or path.stem in only)]
 
 
 def validate_only(
@@ -208,9 +195,7 @@ def validate_only(
     missing = only - {path.stem for path in scripts}
 
     if missing:
-        raise ValueError(
-            "selected scripts not found: " + ", ".join(sorted(missing))
-        )
+        raise ValueError("selected scripts not found: " + ", ".join(sorted(missing)))
 
 
 def is_utf8_text(path: Path) -> bool:
@@ -236,10 +221,7 @@ def replace_references(
     if not names:
         return line
 
-    alternatives = "|".join(
-        re.escape(name)
-        for name in sorted(names, key=len, reverse=True)
-    )
+    alternatives = "|".join(re.escape(name) for name in sorted(names, key=len, reverse=True))
     pattern = re.compile(
         rf"(?<![A-Za-z0-9_.-])"
         rf"({alternatives}){re.escape(source_suffix)}"
@@ -475,10 +457,7 @@ def migrate(
         logger.info("No {} scripts found", config.source_suffix)
         return True
 
-    source_to_destination = {
-        source: source.with_suffix(config.target_suffix)
-        for source in sources
-    }
+    source_to_destination = {source: source.with_suffix(config.target_suffix) for source in sources}
 
     conflicts = [
         destination
@@ -487,10 +466,7 @@ def migrate(
     ]
 
     if conflicts:
-        raise FileExistsError(
-            "destinations already exist: "
-            + ", ".join(str(path) for path in conflicts)
-        )
+        raise FileExistsError("destinations already exist: " + ", ".join(str(path) for path in conflicts))
 
     for source in sources:
         if not is_utf8_text(source):
@@ -499,12 +475,8 @@ def migrate(
     names = tuple(sorted({source.stem for source in sources}))
     planned_links = link_changes(links, source_to_destination)
 
-    logger.warning(
-        "Reference updates are textual; review all changes after migration"
-    )
-    logger.warning(
-        "Migration is not transactional; partial changes can remain on failure"
-    )
+    logger.warning("Reference updates are textual; review all changes after migration")
+    logger.warning("Migration is not transactional; partial changes can remain on failure")
 
     jobs = (
         Job(
@@ -531,10 +503,7 @@ def migrate(
                 logger.info("Updated {}", result.path)
 
     if failed:
-        logger.error(
-            "Some file operations failed; symlinks were not retargeted. "
-            "The tree may be partially migrated."
-        )
+        logger.error("Some file operations failed; symlinks were not retargeted. The tree may be partially migrated.")
         return False
 
     for link, target in planned_links:
@@ -584,9 +553,7 @@ def check_script(path: Path, config: Config) -> list[str]:
         else:
             if result.returncode:
                 details = result.stderr.strip() or result.stdout.strip()
-                problems.append(
-                    f"{path}: {config.target_shell} -n failed: {details}"
-                )
+                problems.append(f"{path}: {config.target_shell} -n failed: {details}")
 
     return problems
 
@@ -633,10 +600,7 @@ def check(
                             config.target_suffix,
                         )
                         if rewritten != line:
-                            problems.append(
-                                f"{path}: possible stale "
-                                f"{config.source_suffix} reference"
-                            )
+                            problems.append(f"{path}: possible stale {config.source_suffix} reference")
                             break
 
             except OSError as exc:
@@ -649,10 +613,7 @@ def check(
             raw_target = link.readlink()
             candidate = (link.parent / raw_target).resolve(strict=False)
 
-            if (
-                candidate.suffix == config.source_suffix
-                and candidate.with_suffix(config.target_suffix) in target_set
-            ):
+            if candidate.suffix == config.source_suffix and candidate.with_suffix(config.target_suffix) in target_set:
                 problems.append(f"{link}: stale symlink target {raw_target}")
 
         except OSError as exc:
@@ -665,8 +626,7 @@ def check(
         return False
 
     logger.success(
-        "Checks passed for {} target scripts; semantic compatibility "
-        "is not guaranteed",
+        "Checks passed for {} target scripts; semantic compatibility is not guaranteed",
         len(targets),
     )
     return True

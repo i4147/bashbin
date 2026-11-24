@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/sh
 
 # state variables
 : "${__is_submenu:=0}" "${__is_fzf_preview:=0}"
@@ -2980,10 +2980,11 @@ preview_display_image() {
 		command_exists "chafa" || die 3 "${new_line}chafa is not installed"
 		chafa --format=symbols -c 16 -s "$((width - 2))x$((height - 10))" "$thumb_path" 2>>"$thumbnail_debug_log"
 		;;
-    chafa-sixel)
-        printf '\n'
-        command_exists "chafa" || die 3 "${new_line}chafa is not installed"
-        chafa -f sixel -s "${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}" "$thumb_path" 2>> "$thumbnail_debug_log" ;;
+	chafa-sixel)
+		printf '\n'
+		command_exists "chafa" || die 3 "${new_line}chafa is not installed"
+		chafa -f sixel -s "${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}" "$thumb_path" 2>>"$thumbnail_debug_log"
+		;;
 	catimg)
 		printf '\n'
 		command_exists "catimg" || die 3 "${new_line}catimg is not installed"

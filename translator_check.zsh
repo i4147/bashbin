@@ -1,3 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/zsh
 python - <<'PY'
 import requests
 for url in ("https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=fa&dt=t&q=hello",

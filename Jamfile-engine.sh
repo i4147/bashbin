@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/data/data/com.termux/files/usr/bin/sh
 ##	Haiku Generic Jamfile Engine v1.0.3
 ##	Does all the hard work for the Generic Jamfile
 ##	which simply defines the project parameters.
