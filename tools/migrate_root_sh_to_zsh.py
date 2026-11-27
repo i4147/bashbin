@@ -1,11 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/env python
-"""Migrate top-level Bash scripts and their command aliases to Zsh.
-
-Run with ``--apply`` to rename root-level ``*.sh`` scripts to ``*.zsh``, set
-Termux's Zsh interpreter and Bash-compatible word/glob options, translate a few
-standard shell builtins, update matching in-repository references, and retarget
-extensionless symlinks. Run with ``--check`` (the default) to verify the result.
-"""
 
 from __future__ import annotations
 
@@ -27,9 +20,7 @@ def root_scripts() -> list[Path]:
 
 
 def rewrite_bashisms(text: str) -> str:
-    """Translate simple Bash-only setup commands to their Zsh equivalents."""
     text = text.replace("shopt -s nullglob dotglob", "setopt NULL_GLOB GLOB_DOTS")
-    # In the migrated script the wildcard is `*`, so nocaseglob has no effect.
     text = text.replace("shopt -s nullglob nocaseglob", "setopt NULL_GLOB")
     text = text.replace("shopt -s nullglob", "setopt NULL_GLOB")
     text = re.sub(r"\bdeclare\s+-A\b", "typeset -A", text)
@@ -47,9 +38,6 @@ def with_zsh_header(text: str) -> str:
     else:
         lines.insert(0, SHEBANG + newline)
 
-    # Keep the old Bash scripts' ordinary word splitting and unmatched-glob
-    # behavior when they run under Zsh; array-indexing builtins are migrated
-    # explicitly in the handful of scripts that use them.
     header = PROLOGUE.replace("\n", newline)
     if len(lines) > 1 and lines[1].startswith(PROLOGUE.splitlines()[0]):
         return "".join(lines)
@@ -62,7 +50,6 @@ def moved_script_names() -> list[str]:
 
 
 def rewrite_references(names: list[str]) -> int:
-    """Update text references to migrated root scripts, avoiding substrings."""
     if not names:
         return 0
     alternatives = "|".join(re.escape(name) for name in sorted(names, key=len, reverse=True))
